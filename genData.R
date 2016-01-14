@@ -1,9 +1,5 @@
-############################################################
-# DISCRIMINANT FUNCTIONS: DATA GENERATION
-############################################################
-
 # The following function generates binary data. 
-# The idea for spiral data comes from: https://www.classes.cs.uchicago.edu/archive/2015/winter/12200-1/assignments/pa5/index.html
+# The spiral data comes from: https://www.classes.cs.uchicago.edu/archive/2015/winter/12200-1/assignments/pa5/index.html
 
 spiralData <- function(N = 2000, save.data = TRUE, save.plot = TRUE) { 
   
@@ -39,14 +35,6 @@ spiralData <- function(N = 2000, save.data = TRUE, save.plot = TRUE) {
     colnames(data) <- c("Y", "X", "Label", "Target")
     
     # create plot
-    #ggplot(data = data, 
-     #      aes(x = X, y = Y, colour=Label, fill=Label)) + 
-    #  geom_point() +
-    #  xlab("X") +
-    #  ylab("Y") +
-    #  theme_bw() +
-    #  theme(text=element_text(family="Helvetica"))
-    
     if (save.data == TRUE) {write.csv(data, file = "dataset.csv")}
     if (save.plot == TRUE) {
         pdf("dataPlot.pdf", width=10)
@@ -55,8 +43,8 @@ spiralData <- function(N = 2000, save.data = TRUE, save.plot = TRUE) {
           geom_point() +
           xlab("X") +
           ylab("Y") +
-          theme_bw() +
-          theme(text=element_text(family="Helvetica")))
+          theme_bw() 
+         )
        dev.off()
     }
 }
