@@ -1,3 +1,8 @@
+#load require packages
+if (!require("ggplot2")) install.packages("ggplot2"); library(ggplot2)
+if (!require("mvtnorm")) install.packages("mvtnorm"); library(mvtnorm)
+
+# define function to create dataset with third category
 loanData <- function(noApproved, noDenied, noUndecided, muApproved, muDenied, muUndecided, sdApproved, 
                      sdDenied, sdUndecided, rhoApproved, rhoDenied, rhoUndecided, seed=1111) {
   

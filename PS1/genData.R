@@ -1,8 +1,10 @@
-# The following function generates binary data. 
+# The following function generates binary data. You just have to input the number
+# of observations to be generated.
 # The spiral data comes from: https://www.classes.cs.uchicago.edu/archive/2015/winter/12200-1/assignments/pa5/index.html
 
 spiralData <- function(N = 2000, save.data = TRUE, save.plot = TRUE) { 
   
+    if (!require("ggplot2")) install.packages("ggplot2"); library(ggplot2)
     x=c(); y=c(); counter = 0
     
     # Generate category 1
@@ -47,4 +49,5 @@ spiralData <- function(N = 2000, save.data = TRUE, save.plot = TRUE) {
          )
        dev.off()
     }
+    return(data)
 }
