@@ -1,0 +1,18 @@
+sudo pip install awscli                  
+aws configure                        
+
+aws emr create-cluster \
+--name Spark-Jupyter-Cluster \
+--ami-version 3.8.0 \
+--instance-type m3.xlarge \
+--instance-count 4 \
+--applications Name=GANGLIA Name=SPARK,Args=[-g,-d,spark.executor.memory=10g] \
+--bootstrap-actions Path=s3://sparkhw/bootstrap/install-jupyter-notebook-pySpark.sh,Name=Install_Jupyter \
+--region eu-west-1 \
+--use-default-roles \
+--ec2-attributes KeyName=rogerkey \
+--enable-debugging \
+--log-uri s3://sparkhw/log/ \
+--termination-protected
+
+ssh -i rogerkey.pem hadoop@masterDNS
