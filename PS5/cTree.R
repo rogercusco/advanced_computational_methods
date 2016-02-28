@@ -16,7 +16,7 @@ cTree <- function( formula, data, depth, minPoints, costFnc = "Entropy") {
   df = model.frame(formula, data = data)
   # X = model.matrix(formula, data = data)[,-1]
   # dependent = model.response(df, type = "factor")
-  dep = df[,1]
+  dep = as.character(df[,1])
   X = cbind(df[,-1],dep)
   y = ncol(X)
   
@@ -30,7 +30,7 @@ cTree <- function( formula, data, depth, minPoints, costFnc = "Entropy") {
     
     uniquecounts <- function(X, y) {
       
-      probabilities = table(X[,y])/nrow(X)
+      probabilities = sort(table(X[,y])/nrow(X), decreasing=TRUE)
       return(list(labels=names(probabilities),
                   probability=unname(probabilities)))
     } 
@@ -47,7 +47,9 @@ cTree <- function( formula, data, depth, minPoints, costFnc = "Entropy") {
     
     buildtree <- function(y, X, depth, minPoints, cf, store=c(), K = 0, l=2) {
     
-      if ( nrow(X) <= minPoints || K >= depth) { return(c())
+      if ( nrow(X) <= minPoints || K >= depth) { return(c(col=NA, value=NA, set1=NA, 
+                                                          set2=NA, tf=l, set = nrow(X), 
+                                                          parent_K = K))
     
       } else {
         
@@ -85,7 +87,7 @@ cTree <- function( formula, data, depth, minPoints, costFnc = "Entropy") {
         }
       }
       
-        if(best_gain ==0 ) return(c(col=NA, value=NA, set1=NA, 
+        if(best_gain <= 0 ) return(c(col=NA, value=NA, set1=NA, 
                                     set2=NA, tf=l, set = nrow(X), 
                                     parent_K = K))
         #if(is.null(best_sets[[1]]) | is.null(best_sets[[1]]) ) return(c())
@@ -125,19 +127,23 @@ cTree <- function( formula, data, depth, minPoints, costFnc = "Entropy") {
             final_node[i] = j 
             break
           }
-          if((last_node == TRUE & tree[5,j] == 1) | size != tree[6,j] | parent + 1 != tree[7,j] 
-            # |is.na(tree[1,j]) 
-             ) { next }
+          if((last_node == TRUE & tree[5,j] == 1) | 
+             size != tree[6,j] | parent + 1 != tree[7,j] 
+
+          ) { next }
           
-          if((last_node == FALSE & tree[5,j] == 0) | size != tree[6,j] | parent + 1 != tree[7,j] 
-            # | is.na(tree[1,j]) 
-            ) { next }
-          
-          col = tree[1,j]; value = tree[2,j]; tf = tree[5,j]; test = obs[col] > value
-          
-          if(test == TRUE) {last_node = TRUE; size = tree[3,j]; parent = tree[7,j]
+          if((last_node == FALSE & tree[5,j] == 0) | 
+             size != tree[6,j] | parent + 1 != tree[7,j] 
+           
+          ) { next }
+      
+          col = tree[1,j]; value = tree[2,j]; tf = tree[5,j]; 
+          test = obs[col] > value
+
+          if(test == TRUE) {last_node = TRUE; size = tree[3,j]; 
+          parent = tree[7,j]
     
-          } else {last_node = FALSE; size = tree[4,j]; parent = tree[7,j]} 
+          } else { last_node = FALSE; size = tree[4,j]; parent = tree[7,j]} 
         }
       }
       return(final_node)
@@ -154,18 +160,24 @@ cTree <- function( formula, data, depth, minPoints, costFnc = "Entropy") {
       count = count + 1
       subset_node = X[which(final_node == i),]
       probability_node[count] = max(uniquecounts(subset_node,y)$probability)
-      label_node[count] = names(sort(table(subset_node[,y]), decreasing=TRUE))[1]
+      label_node[count] = names(sort(table(subset_node[,y])/nrow(subset_node), decreasing=TRUE))[1]
+      # label_node[count] = (uniquecounts(subset_node,y)$labels)[1]
+    #print(sort(table(subset_node[,y])/nrow(subset_node), decreasing=TRUE))
+      
     }
-
+   
     code = as.data.frame(cbind(terminal_names, label_node, probability_node))
     ob <- as.data.frame(final_node)
     colnames(ob) <- "terminal_names"
-    print(tree)
-    print(head(ob,5))
-    print(table(ob))
-    print(code)
     final_label <- (merge(ob, code, by = "terminal_names", sort=FALSE))
-    print(nrow(final_label))
+
+    code = as.data.frame(cbind(terminal_names, label_node, probability_node))
+    ob <- cbind(as.data.frame(final_node), 1:length(final_node))
+    colnames(ob) <- c("terminal_names","or")
+    final_label <- (merge(ob, code, by = "terminal_names", sort=FALSE))
+    final_label <- final_label[order(final_label[,2]),]
+    
+    
  return(list(predLabels=final_label$label_node,
        prob=final_label$probability_node))
 
