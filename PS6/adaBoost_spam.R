@@ -32,7 +32,7 @@ for(i in sequence) {
               distribution = "adaboost",
               data = rbind(spamdb_train, spamdb_test),
               n.trees = noIterations,
-              interaction.depth = 30,
+              interaction.depth = 1,
               shrinkage = 1,
               bag.fraction = 1,
               train.fraction = 7/10)
@@ -81,7 +81,7 @@ for(i in sequence) {
                 distribution = "adaboost",
                 data = rbind(spamdb_train, spamdb_test),
                 n.trees = noIterations,
-                interaction.depth = 30,
+                interaction.depth = 1,
                 shrinkage = 1,
                 bag.fraction = 1,
                 train.fraction = 7/10)
