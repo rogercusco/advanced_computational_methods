@@ -32,7 +32,7 @@ for(i in sequence) {
               distribution = "adaboost",
               data = rbind(spamdb_train, spamdb_test),
               n.trees = noIterations,
-              interaction.depth = 1,
+              interaction.depth = 30,
               shrinkage = 1,
               bag.fraction = 1,
               train.fraction = 7/10)
@@ -81,7 +81,7 @@ for(i in sequence) {
                 distribution = "adaboost",
                 data = rbind(spamdb_train, spamdb_test),
                 n.trees = noIterations,
-                interaction.depth = 1,
+                interaction.depth = 30,
                 shrinkage = 1,
                 bag.fraction = 1,
                 train.fraction = 7/10)
@@ -112,17 +112,18 @@ for(i in sequence) {
 # GENERATE PLOTS
 ####################################################################################  
   
+  setwd("~/Desktop/advanced_computational_methods/PS6")
   pdf("adaBoost.pdf")
   
   plot(sequence, 100*roger_accuracy_insample, type='l', 
-       col='blue', ylim=c(70,100), xlab='iterations', ylab='accuracy')
-  lines(sequence, 100*gbm_accuracy_insample, col='red')
+       col='blue', ylim=c(70,100), xlab='iterations', ylab='accuracy', lty=2)
+  lines(sequence, 100*gbm_accuracy_insample, col='red', lty=2)
   legend('bottomright', col=c('blue', 'red'), legend=c("roger", "gbm"), lty=2, bty='n')
   
   
   plot(sequence, 100*roger_accuracy_osample, type='l', 
-       col='blue', ylim=c(70,100), xlab='iterations', ylab='accuracy')
-  lines(sequence, 100*gbm_accuracy_osample, col='red')
+       col='blue', ylim=c(70,100), xlab='iterations', ylab='accuracy', lty=2)
+  lines(sequence, 100*gbm_accuracy_osample, col='red', lty=2)
   legend('bottomright', col=c('blue', 'red'), legend=c("roger", "gbm"), lty=2, bty='n')
   
   dev.off()
